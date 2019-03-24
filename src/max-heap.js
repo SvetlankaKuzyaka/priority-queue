@@ -4,26 +4,29 @@ class MaxHeap {
 	constructor() {
 	  this.root = null;
 		this.parentNodes = [];
-		this.size = 0;
+		this.sizeOfHeap = 0;
 	}
 
 	push(data, priority) {
 		var new_node = new Node(data, priority);
 		this.insertNode(new_node);
-		this.shiftNodeUp(new_node);
-		this.size += 1;
+	//	this.shiftNodeUp(new_node);
+		this.sizeOfHeap += 1;
 	}
 
 	pop() {
-		if (this.size == 0) return;
-
-		this.size -= 1;
+		if (this.isEmpty()) return;
+		this.sizeOfHeap -= 1;
+		//var root_pop = this.detachRoot();
+		//this.restoreRootFromLastInsertedNode(root_pop);
+		//this.shiftNodeDown(this.root);
+		//return root_pop.data;
 	}
 
 	detachRoot() {
 		var root_detach = this.root;
-		if (this.parentNodes[0] == root_detach) {this.parentNodes.shift();}
 		this.root = null;
+		if (this.parentNodes[0] == root_detach) {this.parentNodes.shift();}
 		return root_detach;
 	}
 
@@ -32,11 +35,11 @@ class MaxHeap {
 	}
 
 	size() {
-		return this.size;
+		return this.sizeOfHeap;
 	}
 
 	isEmpty() {
-		if (this.size == 0) {
+		if (this.sizeOfHeap == 0) {
 			return true;
 		} else {
 			return false;
@@ -46,7 +49,7 @@ class MaxHeap {
 	clear() {
 		this.root = null;
 		this.parentNodes = [];
-		this.size = 0;
+		this.sizeOfHeap = 0;
 	}
 
 	insertNode(node) {
@@ -64,18 +67,27 @@ class MaxHeap {
 	}
 
 	shiftNodeUp(node) {
-	//	while (node.priority > node.parent.priority) {
-		//	node.swapWithParent();
-	//	}
+		if (!node.parent) {
+		  this.root = node;
+		  return; }
+		if (node.priority > node.parent.priority) {
+		  var node_position = this.parentNodes.indexOf(node);
+		  var node_parent_position = this.parentNodes.indexOf(node.parent);
+		  if (node_position != -1 && node_parent_position != -1) {
+		    this.parentNodes[node_position] = node.parent;
+		    this.parentNodes[node_parent_position] = node;
+		  } else if (node_position != -1 && node_parent_position == -1) {
+		    this.parentNodes[node_position] = node.parent;
+		  }
+		  node.swapWithParent();
+		  this.shiftNodeUp(node);
+		 }
 	}
 
 	shiftNodeDown(node) {
-	//	while (node.priority < Math.max(node.left.priority, node.right.priority)) {
-	//	  if (node.left.priority == Math.max(node.left.priority, node.right.priority)) {
-	//			node.left.swapWithParent();
-	//		} else {node.right.swapWithParent();}
-		}
+
 	}
+}
 
 
 module.exports = MaxHeap;
